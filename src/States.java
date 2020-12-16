@@ -134,11 +134,12 @@ public enum States {
             System.out.println();
             System.out.println("\nVälkommen " + educator.getFirstName() + "!" +
                     "\n 1. Ange frånvaro" +
-                    "\n 2. Registrera ett nytt barn till förskolan" +
+                    "\n 2. Registrera en ny person till förskolan" +
                     "\n 3. Se närvaro idag" +
                     "\n 4. Se ett barns omsorgstider " +
                     "\n 5. Se vårdnadshavares kontaktuppgifter" +
-                    "\n 6. Logga ut");
+                    "\n 6. Ta bort en användare från förskolan" +
+                    "\n 7. Logga ut");
         }
     },
 
@@ -156,12 +157,47 @@ public enum States {
         }
     },
 
-    REGISTER_CHILD {
+    REGISTER_NEW_PERSON {
         @Override
         public void output(Object o) {
             System.out.println();
-            System.out.println("Registrera nytt barn" +
-                    "\nVem är vårdnadshavare?: ");
+            System.out.println("Registrera en ny person till förskolan" +
+                    "\n1. Nytt barn" +
+                    "\n2. Pedagog");
+        }
+
+        public Educator registerNewEducator(Scanner scan){
+            String firstName;
+            String lastName;
+            String personalNumber;
+            String email;
+            String phoneNumber;
+            String address;
+
+            System.out.print("Ange pedagogens förnamn: ");
+            firstName = scan.next();
+            System.out.print("Ange pedagogens efternamn: ");
+            lastName = scan.next();
+            System.out.print("Ange pedagogens personnummer: ");
+            personalNumber = scan.next();
+
+            Educator educator = new Educator(firstName, lastName, personalNumber);
+
+            System.out.print("Ange pedagogens e-mail: ");
+            email = scan.next();
+            educator.setEmailAddress(email);
+
+            System.out.print("Ange pedagogens telefonnummer: ");
+            phoneNumber = scan.next();
+            educator.setPhoneNumber(phoneNumber);
+
+            System.out.print("Ange pedagogens adress: ");
+            address = scan.next();
+            educator.setPostAddress(address);
+
+            System.out.println();
+
+            return educator;
         }
 
         public Child registerNewChild(Scanner scan) {
@@ -329,6 +365,100 @@ public enum States {
         }
     },
 
+    REMOVE_PERSON {
+        @Override
+        public void output(Object o) {
+            System.out.println();
+            System.out.println("Välj om du vill ta bort" +
+                    "\n1. Barn" +
+                    "\n2. Vårdnadshavare" +
+                    "\n3. Pedagog" +
+                    "\n4. Gå tillbaka till menyn");
+        }
+
+        public void removeEducator(Scanner scan, PersonDAO p, DatabaseDAO d){
+            String name;
+            boolean foundPerson = false;
+            List<Educator> educatorList = (List<Educator>) p;
+
+            System.out.println("Vem vill du ta bort ur systemet?");
+            name = scan.next();
+
+            for (int i = 0; i < educatorList.size(); i++) {
+                Educator educator = educatorList.get(i);
+                if (educator.getFirstName().equalsIgnoreCase(name)) {
+                    System.out.println("Vill du radera " + educator.getFullName() + " från systemet? (ja/nej)");
+                    String answer = scan.next();
+                    foundPerson = true;
+                    if (answer.equalsIgnoreCase("ja")) {
+                        d.deleteEducator(educator);
+                        System.out.println(educator.getFullName() + " har tagits bort från förskolan");
+                    }
+                }
+            }
+            if(!foundPerson){
+                System.out.println("Personen finns inte registrerad på förskolan" +
+                        "\nVar god försök med ett annat namn");
+            }
+
+        }
+
+
+        public void removeCaregiver(Scanner scan, PersonDAO p, DatabaseDAO d){
+            String name;
+            boolean foundPerson = false;
+            List<Caregiver> caregiverList = (List<Caregiver>) p;
+
+            System.out.println("Vem vill du ta bort ur systemet?");
+            name = scan.next();
+
+                for (int i = 0; i < caregiverList.size(); i++) {
+                    Caregiver caregiver = caregiverList.get(i);
+                    if (caregiver.getFirstName().equalsIgnoreCase(name)) {
+                        System.out.println("Vill du radera " + caregiver.getFullName() + " från systemet? (ja/nej)");
+                        String answer = scan.next();
+                        foundPerson = true;
+                        if (answer.equalsIgnoreCase("ja")) {
+                            d.deleteCaregiver(caregiver);
+                            System.out.println(caregiver.getFullName() + " har tagits bort från förskolan");
+                        }
+                    }
+                }
+
+            if(!foundPerson){
+                System.out.println("Personen finns inte registrerad på förskolan" +
+                        "\nVar god försök med ett annat namn");
+            }
+        }
+
+        @Override
+        public void removeChild(Scanner scan, PersonDAO p, DatabaseDAO d){
+            String name;
+            boolean foundPerson = false;
+            List<Child> childList = (List<Child>) p;
+
+            System.out.println("Vem vill du ta bort ur systemet?");
+            name = scan.next();
+
+            for (int i = 0; i < childList.size(); i++) {
+                Child child = childList.get(i);
+                if (child.getFirstName().equalsIgnoreCase(name)) {
+                    System.out.println("Vill du radera " + child.getFullName() + " från systemet? (ja/nej)");
+                    String answer = scan.next();
+                    foundPerson = true;
+                    if (answer.equalsIgnoreCase("ja")) {
+                        d.deleteChild(child);
+                        System.out.println(child.getFullName() + " har tagits bort från förskolan");
+                    }
+                }
+            }
+            if(!foundPerson){
+                System.out.println("Personen finns inte registrerad på förskolan" +
+                        "\nVar god försök med ett annat namn");
+            }
+        }
+    },
+
     SHUT_DOWN {
         @Override
         public void output(Object o) {
@@ -340,6 +470,10 @@ public enum States {
 
     public abstract void output(Object o);
 
+    public Educator registerNewEducator(Scanner scan) {
+        Educator educator = new Educator(null, null, null);
+        return educator;
+    }
 
     public Child registerNewChild(Scanner scan) {
         Child child = new Child(null, null, null);
@@ -362,5 +496,10 @@ public enum States {
         }
     }
 
+    public void removeChild(Scanner scan, PersonDAO p, DatabaseDAO d){}
+
+    public void removeCaregiver(Scanner scan, PersonDAO p, DatabaseDAO d){}
+
+    public void removeEducator(Scanner scan, PersonDAO p, DatabaseDAO d){}
 
 }

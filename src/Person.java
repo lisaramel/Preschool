@@ -29,6 +29,8 @@ public abstract class Person implements Serializable {
         return lastName;
     }
 
+    public String getFullName() { return getFirstName() + " " + getLastName(); }
+
     public String getPersonalNumber() {
         return personalNumber;
     }
