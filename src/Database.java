@@ -6,9 +6,9 @@ import java.util.List;
 public class Database implements AttendanceDAO, Serializable, PersonDAO, DatabaseDAO {
 
 
-    private List<Child> childList = new LinkedList<>();
+    private List<Child> childList;
     private List<Caregiver> caregiverList = new LinkedList<>();
-    private List<Educator> educatorList = new LinkedList<>();
+    private List<Educator> educatorList;
     private List<Attendance> attendanceToday = new ArrayList<>();
     private List<List<Attendance>> attendanceList = new ArrayList<>();
 
@@ -16,7 +16,6 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
     public Database (){
 
         this.childList = deSerialize("Children.ser");
-        //this.caregiverList = deSerialize("Caregivers.ser");
         this.educatorList = deSerialize("Educators.ser");
         findAndAddCAregiver();
         setAttendance();
@@ -93,7 +92,7 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
     @Override
     public <T> List<T> deSerialize(String fileName) {
         List<T> list = new ArrayList<>();
-        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));) {
+        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
             list = (List<T>) in.readObject();
 
         } catch (ClassNotFoundException e) {

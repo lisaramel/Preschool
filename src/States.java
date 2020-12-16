@@ -1,5 +1,3 @@
-import javax.xml.crypto.Data;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -83,24 +81,31 @@ public enum States {
         public void addCaringTime(Child child, Scanner scan) {
             String day = scan.next().toLowerCase();
 
-            if (day.equals("måndag")) {
-                System.out.println("Var god ange lämningstid och hämtningstid på måndag: ");
-                createCaringTime(0, child, day, scan);
-            } else if (day.equals("tisdag")) {
-                System.out.println("Var god ange lämningstid och hämtningstid på tisdag: ");
-                createCaringTime(1, child, day, scan);
-            } else if (day.equals("onsdag")) {
-                System.out.println("Var god ange lämningstid och hämtningstid på onsdag: ");
-                createCaringTime(2, child, day, scan);
-            } else if (day.equals("torsdag")) {
-                System.out.println("Var god ange lämningstid och hämtningstid på torsdag: ");
-                createCaringTime(3, child, day, scan);
-            } else if (day.equals("fredag")) {
-                System.out.println("Var god ange lämningstid och hämtningstid på fredag: ");
-                createCaringTime(4, child, day, scan);
-            } else{
-                System.out.println("var god skriv dagen igen: ");
-                day = scan.next().toLowerCase();
+            switch (day) {
+                case "måndag" -> {
+                    System.out.println("Var god ange lämningstid och hämtningstid på måndag: ");
+                    createCaringTime(0, child, day, scan);
+                }
+                case "tisdag" -> {
+                    System.out.println("Var god ange lämningstid och hämtningstid på tisdag: ");
+                    createCaringTime(1, child, day, scan);
+                }
+                case "onsdag" -> {
+                    System.out.println("Var god ange lämningstid och hämtningstid på onsdag: ");
+                    createCaringTime(2, child, day, scan);
+                }
+                case "torsdag" -> {
+                    System.out.println("Var god ange lämningstid och hämtningstid på torsdag: ");
+                    createCaringTime(3, child, day, scan);
+                }
+                case "fredag" -> {
+                    System.out.println("Var god ange lämningstid och hämtningstid på fredag: ");
+                    createCaringTime(4, child, day, scan);
+                }
+                default -> {
+                    System.out.println("var god skriv dagen igen: ");
+                    day = scan.next().toLowerCase();
+                }
             }
         }
 
@@ -214,9 +219,7 @@ public enum States {
             System.out.print("Ange barnets personnummer: ");
             personalNumber = scan.next();
 
-            Child child = new Child(firstName, lastName, personalNumber);
-
-            return child;
+            return new Child(firstName, lastName, personalNumber);
         }
 
         public Caregiver addCaregiverToNewChild(Scanner scan, String firstName) {
@@ -471,18 +474,15 @@ public enum States {
     public abstract void output(Object o);
 
     public Educator registerNewEducator(Scanner scan) {
-        Educator educator = new Educator(null, null, null);
-        return educator;
+        return new Educator(null, null, null);
     }
 
     public Child registerNewChild(Scanner scan) {
-        Child child = new Child(null, null, null);
-        return child;
+        return new Child(null, null, null);
     }
 
     public Caregiver addCaregiverToNewChild(Scanner scan, String firstName){
-        Caregiver caregiver = new Caregiver(null, null, null);
-        return caregiver;
+        return new Caregiver(null, null, null);
     }
 
     public void addCaringTime(Child child, Scanner scan) { }

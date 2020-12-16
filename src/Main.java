@@ -38,7 +38,7 @@ Pedagog
 
 
     public Main() throws InterruptedException {
-        state = States.LOGIN;
+        //state = States.LOGIN;
 
 
         state = States.LOGIN;
@@ -297,8 +297,6 @@ Pedagog
             }
 
             else if(input == 6){
-                String answer;
-                boolean foundPerson = false;
                 state = States.REMOVE_PERSON;
                 state.output(null);
                 input = scan.nextInt();
