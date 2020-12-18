@@ -310,7 +310,7 @@ Pedagog
                 if (input == 1) {
 
                     state = States.ADMIN;
-                    if(state.checkIfAdmin(educator) == true) {
+                    if(state.checkIfAdmin(educator)) {
                         state = States.REMOVE_PERSON;
                         state.output(null);
                         input = scan.nextInt();
@@ -339,7 +339,7 @@ Pedagog
                 }
                 else if(input == 2){
                     state = States.ADMIN;
-                    if(state.checkIfAdmin(educator) == true) {
+                    if(state.checkIfAdmin(educator)) {
                         List<Educator> educatorList = personDAO.getEducatorList();
                         state.addAdmin(scan, educatorList, educator);
                     }

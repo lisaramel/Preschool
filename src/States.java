@@ -109,8 +109,7 @@ public enum States {
             }
         }
 
-        @Override
-        public void createCaringTime(int dayNumber, Child child, String day, Scanner scan) {
+        private void createCaringTime(int dayNumber, Child child, String day, Scanner scan) {
             String time = scan.next();
             String start = time.substring(0, time.indexOf(","));
             String stop = time.substring(time.indexOf(",") + 1);
@@ -400,7 +399,7 @@ public enum States {
                 name = scan.next();
                 for (Educator educator : educatorList){
                     if(name.equalsIgnoreCase(educator.getFirstName())){
-                        if(educator.isAdmin() == false) {
+                        if(!educator.isAdmin()) {
                             educator.setAdmin(true);
                             System.out.println(educator.getFullName() + " har getts administratörsrättigheter");
                             educatorFound = true;
@@ -418,7 +417,7 @@ public enum States {
         }
         public boolean checkIfAdmin(Educator e){
 
-            if(e.isAdmin() == true)
+            if(e.isAdmin())
                 return true;
             else{
                 System.out.println("Du är inte administratör och kan därför inte göra denna ändring");
@@ -542,8 +541,6 @@ public enum States {
     }
 
     public void addCaringTime(Child child, Scanner scan) { }
-
-    public void createCaringTime(int dayNumber, Child child, String day, Scanner scan) { }
 
     public void showCaringTimes(Child child) {
         System.out.println("Här är " + child.getFirstName() + "s omsorgstider: ");
