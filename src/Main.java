@@ -315,9 +315,6 @@ Pedagog
                         state.output(null);
                         input = scan.nextInt();
 
-
-                        // state = States.REMOVE_PERSON;
-
                         if (input == 1) {
                             List<Child> childList = personDAO.getChildList();
                             state.removeChild(scan, childList, databaseDAO);
