@@ -124,10 +124,12 @@ public enum States {
             List<Educator> educatorList = (List<Educator>) o;
             System.out.println();
             System.out.println("Kontaktuppgifter till pedagogerna:");
+            System.out.println();
             for (Educator educator : educatorList) {
                 System.out.println(educator.getFirstName() + " " + educator.getLastName() +
                         "\n" + educator.getEmailAddress() +
                         "\n" + educator.getPhoneNumber());
+                System.out.println();
             }
         }
     },
@@ -143,7 +145,7 @@ public enum States {
                     "\n 3. Se närvaro idag" +
                     "\n 4. Se ett barns omsorgstider " +
                     "\n 5. Se vårdnadshavares kontaktuppgifter" +
-                    "\n 6. Ta bort en användare från förskolan" +
+                    "\n 6. Redigera användare på förskolan" +
                     "\n 7. Logga ut");
         }
     },
@@ -178,6 +180,7 @@ public enum States {
             String email;
             String phoneNumber;
             String address;
+            String admin;
 
             System.out.print("Ange pedagogens förnamn: ");
             firstName = scan.next();
@@ -199,6 +202,14 @@ public enum States {
             System.out.print("Ange pedagogens adress: ");
             address = scan.next();
             educator.setPostAddress(address);
+
+            System.out.println("Vill du göra " + educator.getFullName() + " till admin? (ja/nej)");
+            admin = scan.next();
+            if(admin.equalsIgnoreCase("ja"))
+            { educator.setAdmin(true); }
+            else if(admin.equalsIgnoreCase("nej")){
+                educator.setAdmin(false);
+            }
 
             System.out.println();
 
@@ -368,6 +379,50 @@ public enum States {
         }
     },
 
+    EDIT_PERSONS {
+        @Override
+        public void output(Object o) {
+            System.out.println("Vad vill du göra?" +
+                    "\n1. Ta bort en person från förskolan" +
+                    "\n2. Ge administratörsskap till en pedagog");
+        }
+    },
+
+    ADMIN{
+        @Override
+        public void output(Object o) {}
+
+        public void addAdmin(Scanner scan, List<Educator> educatorList, Educator e){
+            String name;
+            boolean educatorFound = false;
+
+            if(e.isAdmin() == true){
+                System.out.println("Vem vill du ge administratörs rättigheter?");
+                name = scan.next();
+                for (Educator educator : educatorList){
+                    if(name.equalsIgnoreCase(educator.getFirstName())){
+                        if(educator.isAdmin() == false) {
+                            educator.setAdmin(true);
+                            System.out.println(educator.getFullName() + " har getts administratörsskap");
+                            educatorFound = true;
+                        }
+                        else{
+                            System.out.println(educator.getFullName() + " är redan administratör");
+                            educatorFound = true;
+                        }
+                    }
+
+                }
+                if(!educatorFound){
+                        System.out.println("Den här pedagogen finns inte i systemet, var god lägg till en ny pedagog");
+                }
+            }
+            else{
+                System.out.println("Du är inte administratör och kan därför inte göra denna ändring");
+            }
+        }
+    },
+
     REMOVE_PERSON {
         @Override
         public void output(Object o) {
@@ -379,38 +434,40 @@ public enum States {
                     "\n4. Gå tillbaka till menyn");
         }
 
-        public void removeEducator(Scanner scan, PersonDAO p, DatabaseDAO d){
+        public void removeEducator(Scanner scan, List<Educator> educatorList, Educator e, DatabaseDAO d){
             String name;
             boolean foundPerson = false;
-            List<Educator> educatorList = (List<Educator>) p;
 
-            System.out.println("Vem vill du ta bort ur systemet?");
-            name = scan.next();
+            if(e.isAdmin() == true) {
+                System.out.println("Vem vill du ta bort ur systemet?");
+                name = scan.next();
 
-            for (int i = 0; i < educatorList.size(); i++) {
-                Educator educator = educatorList.get(i);
-                if (educator.getFirstName().equalsIgnoreCase(name)) {
-                    System.out.println("Vill du radera " + educator.getFullName() + " från systemet? (ja/nej)");
-                    String answer = scan.next();
-                    foundPerson = true;
-                    if (answer.equalsIgnoreCase("ja")) {
-                        d.deleteEducator(educator);
-                        System.out.println(educator.getFullName() + " har tagits bort från förskolan");
+                for (int i = 0; i < educatorList.size(); i++) {
+                    Educator educator = educatorList.get(i);
+                    if (educator.getFirstName().equalsIgnoreCase(name)) {
+                        System.out.println("Vill du radera " + educator.getFullName() + " från systemet? (ja/nej)");
+                        String answer = scan.next();
+                        foundPerson = true;
+                        if (answer.equalsIgnoreCase("ja")) {
+                            d.deleteEducator(educator);
+                            System.out.println(educator.getFullName() + " har tagits bort från förskolan");
+                        }
                     }
                 }
-            }
-            if(!foundPerson){
-                System.out.println("Personen finns inte registrerad på förskolan" +
-                        "\nVar god försök med ett annat namn");
+                if (!foundPerson) {
+                    System.out.println("Personen finns inte registrerad på förskolan" +
+                            "\nVar god försök med ett annat namn");
+                }
+            } else{
+                System.out.println("Endast administratörer kan ta bort pedagoger ur systemet");
             }
 
         }
 
 
-        public void removeCaregiver(Scanner scan, PersonDAO p, DatabaseDAO d){
+        public void removeCaregiver(Scanner scan, List<Caregiver> caregiverList, DatabaseDAO d){
             String name;
             boolean foundPerson = false;
-            List<Caregiver> caregiverList = (List<Caregiver>) p;
 
             System.out.println("Vem vill du ta bort ur systemet?");
             name = scan.next();
@@ -435,10 +492,9 @@ public enum States {
         }
 
         @Override
-        public void removeChild(Scanner scan, PersonDAO p, DatabaseDAO d){
+        public void removeChild(Scanner scan, List<Child> childList, DatabaseDAO d){
             String name;
             boolean foundPerson = false;
-            List<Child> childList = (List<Child>) p;
 
             System.out.println("Vem vill du ta bort ur systemet?");
             name = scan.next();
@@ -496,10 +552,12 @@ public enum States {
         }
     }
 
-    public void removeChild(Scanner scan, PersonDAO p, DatabaseDAO d){}
+    public void removeChild(Scanner scan, List<Child> childList, DatabaseDAO d){}
 
-    public void removeCaregiver(Scanner scan, PersonDAO p, DatabaseDAO d){}
+    public void removeCaregiver(Scanner scan, List<Caregiver> caregiverList, DatabaseDAO d){}
 
-    public void removeEducator(Scanner scan, PersonDAO p, DatabaseDAO d){}
+    public void removeEducator(Scanner scan, List<Educator> educatorList, Educator e, DatabaseDAO d){}
+
+    public void addAdmin(Scanner scan, List<Educator> educatorList, Educator e){}
 
 }

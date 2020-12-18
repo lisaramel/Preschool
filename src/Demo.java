@@ -95,6 +95,7 @@ public class Demo {
 
         Educator e = new Educator("Kristina","Eriksson","97807075564");
         d.addEducator(e);
+        e.setAdmin(true);
         e.setEmailAddress("kristina.eriksson@gmail.com");
         e.setPhoneNumber("070 123 45 67");
         e.setPostAddress("Stockholm");

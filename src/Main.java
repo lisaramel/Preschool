@@ -211,8 +211,8 @@ Pedagog
                 input = scan.nextInt();
 
                 if (input == 1) {
-                    firstName = scan.next();
                     System.out.println("Vem är vårdnadshavare?: ");
+                    firstName = scan.next();
                     boolean foundCaregiver = false;
 
                     //Om vårdnadshavaren redan finns i systemet, läggs
@@ -227,6 +227,7 @@ Pedagog
                             child.addCaregiver(caregiver);
                             caregiver.addChildren(child);
                             attendanceDAO.addChildInAttendance(child);
+                            System.out.println(child.getFullName() + " har registrerats på förskolan");
                             foundCaregiver = true;
                         }
                     }
@@ -242,6 +243,10 @@ Pedagog
                         child.addCaregiver(caregiver);
                         caregiver.addChildren(child);
                         attendanceDAO.addChildInAttendance(child);
+
+                        System.out.println(child.getFullName() + " har registrerats på förskolan");
+
+
                     }
                     saveAllFiles();
 
@@ -251,6 +256,7 @@ Pedagog
                     System.out.println(newEducator.getFullName() + " är nu registrerad på förskolan");
                 }
             }
+
             //Om användaren vill skriva ut närvarolistor
             else if (input == 3) {
 
@@ -296,25 +302,43 @@ Pedagog
                 }
             }
 
-            else if(input == 6){
-                state = States.REMOVE_PERSON;
+            else if(input == 6) {
+                state = States.EDIT_PERSONS;
                 state.output(null);
                 input = scan.nextInt();
 
-                if(input == 1){
-                    state.removeChild(scan, personDAO, databaseDAO);
-                    saveAllFiles();
+                if (input == 1) {
+                    state = States.REMOVE_PERSON;
+                    state.output(null);
+                    input = scan.nextInt();
 
-                } else if(input == 2){
-                    state.removeCaregiver(scan, personDAO, databaseDAO);
-                    saveAllFiles();
+                    if (input == 1) {
+                        List<Child> childList = personDAO.getChildList();
+                        state.removeChild(scan, childList, databaseDAO);
+                        saveAllFiles();
 
-                } else if(input == 3){
-                state.removeEducator(scan, personDAO, databaseDAO);
-                saveAllFiles();
+                    } else if (input == 2) {
+                        List<Caregiver> caregiverList = personDAO.getCaregiverList();
+                        state.removeCaregiver(scan, caregiverList, databaseDAO);
+                        saveAllFiles();
 
-                } else if(input == 4){
-                    state = States.EDUCATOR;
+                    } else if (input == 3) {
+                        List<Educator> educatorList = personDAO.getEducatorList();
+                        state.removeEducator(scan, educatorList, educator, databaseDAO);
+                        saveAllFiles();
+
+                    } else if (input == 4) {
+                        state = States.EDUCATOR;
+                    } else {
+                        System.out.println("Okänt kommando, var god försök igen.");
+                    }
+                }
+                else if(input == 2){
+                    state = States.ADMIN;
+                    List<Educator> educatorList = personDAO.getEducatorList();
+                    state.addAdmin(scan, educatorList, educator);
+                }else{
+                    System.out.println("Okänt kommando, var god försök igen.");
                 }
             }
 

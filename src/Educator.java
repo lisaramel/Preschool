@@ -10,6 +10,7 @@ public class Educator extends Person implements IContactInformation {
     private String eMailAddress;
     private String phoneNumber;
     private String postAddress;
+    private boolean isAdmin;
 
     Educator(String firstName, String lastName, String personalNumber) {
         super(firstName, lastName, personalNumber);
@@ -30,6 +31,10 @@ public class Educator extends Person implements IContactInformation {
         this.postAddress = postAddress;
     }
 
+    public void setAdmin(boolean admin) { isAdmin = admin; }
+
+    public boolean isAdmin() { return isAdmin; }
+
     @Override
     public String getEmailAddress() {
         return eMailAddress;
@@ -44,6 +49,5 @@ public class Educator extends Person implements IContactInformation {
     public String getPostAddress() {
         return postAddress;
     }
-
 
 }
