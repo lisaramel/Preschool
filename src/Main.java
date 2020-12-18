@@ -308,35 +308,44 @@ Pedagog
                 input = scan.nextInt();
 
                 if (input == 1) {
-                    state = States.REMOVE_PERSON;
-                    state.output(null);
-                    input = scan.nextInt();
 
-                    if (input == 1) {
-                        List<Child> childList = personDAO.getChildList();
-                        state.removeChild(scan, childList, databaseDAO);
-                        saveAllFiles();
+                    state = States.ADMIN;
+                    if(state.checkIfAdmin(educator) == true) {
+                        state = States.REMOVE_PERSON;
+                        state.output(null);
+                        input = scan.nextInt();
 
-                    } else if (input == 2) {
-                        List<Caregiver> caregiverList = personDAO.getCaregiverList();
-                        state.removeCaregiver(scan, caregiverList, databaseDAO);
-                        saveAllFiles();
 
-                    } else if (input == 3) {
-                        List<Educator> educatorList = personDAO.getEducatorList();
-                        state.removeEducator(scan, educatorList, educator, databaseDAO);
-                        saveAllFiles();
+                        // state = States.REMOVE_PERSON;
 
-                    } else if (input == 4) {
-                        state = States.EDUCATOR;
-                    } else {
-                        System.out.println("Okänt kommando, var god försök igen.");
+                        if (input == 1) {
+                            List<Child> childList = personDAO.getChildList();
+                            state.removeChild(scan, childList, databaseDAO);
+                            saveAllFiles();
+
+                        } else if (input == 2) {
+                            List<Caregiver> caregiverList = personDAO.getCaregiverList();
+                            state.removeCaregiver(scan, caregiverList, databaseDAO);
+                            saveAllFiles();
+
+                        } else if (input == 3) {
+                            List<Educator> educatorList = personDAO.getEducatorList();
+                            state.removeEducator(scan, educatorList, educator, databaseDAO);
+                            saveAllFiles();
+
+                        } else if (input == 4) {
+                            state = States.EDUCATOR;
+                        } else {
+                            System.out.println("Okänt kommando, var god försök igen.");
+                        }
                     }
                 }
                 else if(input == 2){
                     state = States.ADMIN;
-                    List<Educator> educatorList = personDAO.getEducatorList();
-                    state.addAdmin(scan, educatorList, educator);
+                    if(state.checkIfAdmin(educator) == true) {
+                        List<Educator> educatorList = personDAO.getEducatorList();
+                        state.addAdmin(scan, educatorList, educator);
+                    }
                 }else{
                     System.out.println("Okänt kommando, var god försök igen.");
                 }

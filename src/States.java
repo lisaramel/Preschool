@@ -396,14 +396,13 @@ public enum States {
             String name;
             boolean educatorFound = false;
 
-            if(e.isAdmin() == true){
-                System.out.println("Vem vill du ge administratörs rättigheter?");
+                System.out.println("Vem vill du ge administratörsrättigheter?");
                 name = scan.next();
                 for (Educator educator : educatorList){
                     if(name.equalsIgnoreCase(educator.getFirstName())){
                         if(educator.isAdmin() == false) {
                             educator.setAdmin(true);
-                            System.out.println(educator.getFullName() + " har getts administratörsskap");
+                            System.out.println(educator.getFullName() + " har getts administratörsrättigheter");
                             educatorFound = true;
                         }
                         else{
@@ -416,10 +415,15 @@ public enum States {
                 if(!educatorFound){
                         System.out.println("Den här pedagogen finns inte i systemet, var god lägg till en ny pedagog");
                 }
-            }
+        }
+        public boolean checkIfAdmin(Educator e){
+
+            if(e.isAdmin() == true)
+                return true;
             else{
                 System.out.println("Du är inte administratör och kan därför inte göra denna ändring");
             }
+            return false;
         }
     },
 
@@ -438,7 +442,6 @@ public enum States {
             String name;
             boolean foundPerson = false;
 
-            if(e.isAdmin() == true) {
                 System.out.println("Vem vill du ta bort ur systemet?");
                 name = scan.next();
 
@@ -458,9 +461,6 @@ public enum States {
                     System.out.println("Personen finns inte registrerad på förskolan" +
                             "\nVar god försök med ett annat namn");
                 }
-            } else{
-                System.out.println("Endast administratörer kan ta bort pedagoger ur systemet");
-            }
 
         }
 
@@ -559,5 +559,7 @@ public enum States {
     public void removeEducator(Scanner scan, List<Educator> educatorList, Educator e, DatabaseDAO d){}
 
     public void addAdmin(Scanner scan, List<Educator> educatorList, Educator e){}
+
+    public boolean checkIfAdmin(Educator e){ return false;}
 
 }
